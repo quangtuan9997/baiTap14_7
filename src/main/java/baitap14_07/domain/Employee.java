@@ -1,6 +1,7 @@
 package baitap14_07.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,8 +11,11 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Size(min = 6)
     private String name;
+    @Column(unique = true)
     private String email;
+    @Size(min = 5,max = 50)
     @Column(name = "deparment_id")
     private Long departmentId;
     @ManyToOne(fetch = FetchType.LAZY)

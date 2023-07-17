@@ -1,6 +1,7 @@
 package baitap14_07.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "department")
@@ -8,8 +9,10 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Size(min = 5, max = 50)
     @Column(name = "name")
     private String name;
+    @Size(max = 100)
     @Column(name = "description")
     private String description;
 

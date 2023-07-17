@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{layout/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -7,8 +7,8 @@
     <title>Title</title>
 </head>
 <body>
-<div th:insert="~{header.html}"></div>
-<form method="get" th:action="@{/employee/findAll}">
+<div layout:fragment="content">
+<form method="get" th:action="@{/employee/index}"style="text-align: center">
     <input type="text" name="name">
     <button type="submit">Search</button>
 </form>
@@ -23,6 +23,7 @@
         <th>Department Name</th>
         <th>Edit</th>
         <th>Delete</th>
+        <th>Detail</th>
     </tr>
     </thead>
     <tbody th:each="employee,count : ${listEmployee}">
@@ -37,10 +38,11 @@
         <td><a th:href="@{'/employee/delete/'+${employee.id}}">
             <button>Delete</button>
         </a></td>
+        <td><a th:href="@{'/employee/detail/'+${employee.id}}"><button>Detail</button></a></td>
     </tr>
     </tbody>
 </table>
-<footer th:insert="~{footer.html}"></footer>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

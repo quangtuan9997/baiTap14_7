@@ -8,16 +8,13 @@
 </head>
 <body>
 <div layout:fragment="content">
-<h3>Update</h3>
-<form th:action="@{/department/edit}" method="post">
-    <p th:if="${message !=null}" th:text="${message}" style="color: chartreuse"></p>
-    <input th:value="${department.id}" name="id" type="hidden"><br>
-    <label>Name:</label>
-    <input type="text" name="name" th:value="${department.name}" placeholder="name"><br>
-    <label>Description</label>
-    <input type="text" th:value="${department.description}" name="description" placeholder="Description"><br>
-    <button type="submit">Upload</button>
-</form>
+<h3 style="text-align: center">Detail</h3>
+<h4 th:if="${message !=null}" th:text="${message}" style="color: red"></h4>
+<div th:unless="${message != null}" style="max-width: 500px ; border: 1px">
+    <h4 th:text="${department.name}"></h4>
+    <p>description: <span th:text="${department.description}"></span> </p>
+
+</div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

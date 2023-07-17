@@ -22,34 +22,34 @@ public class DepartmentController {
         this.departmentRepository = departmentRepository;
     }
 
-    @GetMapping("/view")
-    public ModelAndView findAll(Pageable pageable) {
+    @GetMapping("/index")
+    public ModelAndView index(Pageable pageable) {
         Page<DepartmentDTO> listDepartment = departmentService.findAll(pageable);
         ModelAndView modelAndView = new ModelAndView("department/index");
-        modelAndView.addObject("listDepartment", listDepartment);
+        modelAndView.addObject("departments", listDepartment);
         return modelAndView;
     }
 
-    @PostMapping("/create")
-    public ModelAndView createDepartment(@RequestParam("name") String name,
-                                         @RequestParam("description") String description) {
+    @PostMapping("/add")
+    public ModelAndView doAdd(@RequestParam("name") String name,
+                              @RequestParam("description") String description) {
         DepartmentDTO departmentDTO = new DepartmentDTO();
         departmentDTO.setName(name);
         departmentDTO.setDescription(description);
         departmentService.save(departmentDTO);
-        ModelAndView modelAndView = new ModelAndView("department/create");
+        ModelAndView modelAndView = new ModelAndView("department/add");
         modelAndView.addObject("message", "Create success!!");
         return modelAndView;
     }
 
-    @GetMapping("/create")
-    public ModelAndView createView() {
-        ModelAndView modelAndView = new ModelAndView("department/create");
+    @GetMapping("/add")
+    public ModelAndView showAdd() {
+        ModelAndView modelAndView = new ModelAndView("department/add");
         return modelAndView;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteById(@PathVariable("id") Long id, Pageable pageable) {
+    public ModelAndView doDelete(@PathVariable("id") Long id, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("department/index");
         Page<DepartmentDTO> listDepartment = departmentService.findAll(pageable);
         if (!departmentRepository.findById(id).isPresent()) {
@@ -60,7 +60,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editView(@PathVariable("id") Long id) {
+    public ModelAndView showEdit(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("department/edit");
         Optional<DepartmentDTO> departmentDTO = departmentService.findOne(id);
         if (departmentDTO.isPresent()) {
@@ -70,7 +70,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/edit")
-    public ModelAndView update(@RequestParam("id") Long id,
+    public ModelAndView doEdit(@RequestParam("id") Long id,
                                @RequestParam("name") String name,
                                @RequestParam("description") String description, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("department/index");
@@ -82,5 +82,15 @@ public class DepartmentController {
         Page<DepartmentDTO> listDepartment = departmentService.findAll(pageable);
         modelAndView.addObject("listDepartment", listDepartment);
         return modelAndView;
+    }
+    @GetMapping("/detail/{id}")
+    public ModelAndView showDetail(@PathVariable("id") Long id){
+        ModelAndView modelAndView = new ModelAndView("department/detail");
+        Optional<DepartmentDTO> departmentDTO = departmentService.findOne(id);
+        if (departmentDTO.isPresent()){
+            modelAndView.addObject("department",departmentDTO.get());
+            return modelAndView;
+        }
+        return modelAndView.addObject("message","Entity not found");
     }
 }

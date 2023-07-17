@@ -32,29 +32,29 @@ public class EmployeeController {
         this.roleRepository = roleRepository;
     }
 
-    @GetMapping("/findAll")
-    public ModelAndView findAll(@RequestParam(name = "name", required = false, defaultValue = "") String name, Pageable pageable) {
+    @GetMapping("/index")
+    public ModelAndView index(@RequestParam(name = "name", required = false, defaultValue = "") String name, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("employee/index");
         Page<EmployeeDTO> employeeDTOS = employeeService.findAll(name, pageable);
         modelAndView.addObject("listEmployee", employeeDTOS);
         return modelAndView;
     }
 
-    @GetMapping("/create")
-    public ModelAndView createView(Pageable pageable) {
-        ModelAndView modelAndView = new ModelAndView("employee/create");
+    @GetMapping("/add")
+    public ModelAndView showAdd(Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("employee/add");
         Page<DepartmentDTO> listDepart = departmentService.findAll(pageable);
-        modelAndView.addObject("role",roleRepository.findAll());
+        modelAndView.addObject("role", roleRepository.findAll());
         modelAndView.addObject("listDepartment", listDepart);
         return modelAndView;
     }
 
-    @PostMapping("/create")
-    public ModelAndView createEmployee(@RequestParam("name") String name,
-                                       @RequestParam("email") String email,
-                                       @RequestParam("depart") Long departmentId,
-                                       @RequestParam("role")String roleId) {
-        ModelAndView modelAndView = new ModelAndView("employee/create");
+    @PostMapping("/add")
+    public ModelAndView doAdd(@RequestParam("name") String name,
+                              @RequestParam("email") String email,
+                              @RequestParam("depart") Long departmentId,
+                              @RequestParam("role") String roleId) {
+        ModelAndView modelAndView = new ModelAndView("employee/add");
         EmployeeDTO newEmployee = new EmployeeDTO();
         if (employeeRepository.findOneByEmailIgnoreCase(email).isPresent()) {
             return modelAndView.addObject("message", "Email is already in use!");
@@ -66,12 +66,13 @@ public class EmployeeController {
         role.add(roleId);
         newEmployee.setRole(role);
         employeeService.save(newEmployee);
-        modelAndView.addObject("message", "Create Success!!!");
+        modelAndView.addObject("message1", "Create Success!!!");
         return modelAndView;
+
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editView(@PathVariable("id") Long id, Pageable pageable) {
+    public ModelAndView showEdit(@PathVariable("id") Long id, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("employee/edit");
         Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
         if (employeeDTO.isPresent()) {
@@ -85,7 +86,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/edit")
-    public ModelAndView modelAndView(@ModelAttribute("employeeUpload") EmployeeDTO employeeDTO) {
+    public ModelAndView doEdit(@ModelAttribute("employeeUpload") EmployeeDTO employeeDTO) {
         ModelAndView modelAndView = new ModelAndView("employee/edit");
         if (!employeeRepository.existsById(employeeDTO.getId())) {
             return modelAndView.addObject("massage1", "Entity not found");
@@ -99,13 +100,24 @@ public class EmployeeController {
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteById(@PathVariable("id") Long id) {
+    public ModelAndView doDelete(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("employee/index");
         if (employeeRepository.existsById(id)) {
             employeeService.delete(id);
             return modelAndView.addObject("message1", "delete success!!!");
         }
         return modelAndView.addObject("message2", "Entity not found");
+    }
+
+    @GetMapping("/detail/{id}")
+    public ModelAndView showDetail(@PathVariable("id") Long id) {
+        ModelAndView modelAndView = new ModelAndView("employee/detail");
+        Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
+        if (employeeDTO.isPresent()) {
+            modelAndView.addObject("employee", employeeDTO.get());
+            return modelAndView;
+        }
+        return modelAndView.addObject("massage", "Entity not found!!!");
     }
 }
 
