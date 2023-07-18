@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,12 +32,8 @@ public class DepartmentController {
     }
 
     @PostMapping("/add")
-    public ModelAndView doAdd(@RequestParam("name") String name,
-                              @RequestParam("description") String description) {
-        DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setName(name);
-        departmentDTO.setDescription(description);
-        departmentService.save(departmentDTO);
+    public ModelAndView doAdd(@ModelAttribute("department") DepartmentDTO department) {
+        departmentService.save(department);
         ModelAndView modelAndView = new ModelAndView("department/add");
         modelAndView.addObject("message", "Create success!!");
         return modelAndView;
@@ -45,13 +42,14 @@ public class DepartmentController {
     @GetMapping("/add")
     public ModelAndView showAdd() {
         ModelAndView modelAndView = new ModelAndView("department/add");
+        modelAndView.addObject("department", new DepartmentDTO());
         return modelAndView;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView doDelete(@PathVariable("id") Long id, Pageable pageable) {
+    public ModelAndView doDelete(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("department/index");
-        Page<DepartmentDTO> listDepartment = departmentService.findAll(pageable);
+        List<DepartmentDTO> listDepartment = departmentService.findAll();
         if (!departmentRepository.findById(id).isPresent()) {
             return modelAndView.addObject("message", "No ConTen");
         }
@@ -70,27 +68,22 @@ public class DepartmentController {
     }
 
     @PostMapping("/edit")
-    public ModelAndView doEdit(@RequestParam("id") Long id,
-                               @RequestParam("name") String name,
-                               @RequestParam("description") String description, Pageable pageable) {
+    public ModelAndView doEdit(@ModelAttribute("department") DepartmentDTO departmentDTO, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("department/index");
-        DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setName(name);
-        departmentDTO.setId(id);
-        departmentDTO.setDescription(description);
         departmentService.save(departmentDTO);
         Page<DepartmentDTO> listDepartment = departmentService.findAll(pageable);
         modelAndView.addObject("listDepartment", listDepartment);
         return modelAndView;
     }
+
     @GetMapping("/detail/{id}")
-    public ModelAndView showDetail(@PathVariable("id") Long id){
+    public ModelAndView showDetail(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("department/detail");
         Optional<DepartmentDTO> departmentDTO = departmentService.findOne(id);
-        if (departmentDTO.isPresent()){
-            modelAndView.addObject("department",departmentDTO.get());
+        if (departmentDTO.isPresent()) {
+            modelAndView.addObject("department", departmentDTO.get());
             return modelAndView;
         }
-        return modelAndView.addObject("message","Entity not found");
+        return modelAndView.addObject("message", "Entity not found");
     }
 }

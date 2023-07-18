@@ -15,7 +15,6 @@ public class Employee {
     private String name;
     @Column(unique = true)
     private String email;
-    @Size(min = 5,max = 50)
     @Column(name = "deparment_id")
     private Long departmentId;
     @ManyToOne(fetch = FetchType.LAZY)

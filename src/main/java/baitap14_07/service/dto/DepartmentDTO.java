@@ -1,5 +1,7 @@
 package baitap14_07.service.dto;
 
+import javax.validation.constraints.Size;
+
 public class DepartmentDTO {
     private Long id;
     private String name;
